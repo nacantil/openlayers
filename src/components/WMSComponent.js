@@ -22,19 +22,41 @@ var axiosInstance = axios.create(
 	withCredentials: true	
 });
 
-var boundaryLayer = new VectorLayer(
-{
-	background: '#1a2b39',
-  	source: new VectorSource(
-  	{
-    	url: 'https://openlayers.org/data/vector/ecoregions.json',
-    	format: new GeoJSON()
-    }),
-});
+// Sort of a hack, sorry!
+var boundaryLayer = null;
+var geoJsonFeatures = null;
 
 export default function WMSComponent() {
 	// React hooks 
 	var [layers, setLayers] = useState([]);
+	
+	useEffect(() => {
+
+		fetch('/custom.geo.json')
+			.then(response => response.json())
+    		.then( (fetchedFeatures) => 
+    		{
+        		// parse fetched geojson into OpenLayers features
+        		//  use options to convert feature from EPSG:4326 to EPSG:3857
+        		const wktOptions = 
+        		{
+          			dataProjection: 'EPSG:4326',
+          			featureProjection: 'EPSG:4326'
+        		}
+        	geoJsonFeatures = new GeoJSON().readFeatures(fetchedFeatures, wktOptions)
+			boundaryLayer = new VectorLayer(
+			{
+				background: '#1a2b39',
+  				source: new VectorSource(
+  				{
+    				//url: 'https://openlayers.org/data/vector/ecoregions.json',
+    				//format: new GeoJSON()
+    				features: geoJsonFeatures
+    			}),
+			})
+      	});
+      })
+	
 
 	var layer = null;
 	
