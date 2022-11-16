@@ -10,6 +10,7 @@ import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import {transform} from 'ol/proj'
 import {toStringXY} from 'ol/coordinate';
+import GeoJSON from 'ol/format/GeoJSON';
 
 var olMap = null;
 

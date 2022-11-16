@@ -6,6 +6,9 @@ import 'react-dropdown/style.css';
 import {olMap} from "./MapWrapper"
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
+import VectorLayer from 'ol/layer/Vector'
+import VectorSource from 'ol/source/Vector'
+import GeoJSON from 'ol/format/GeoJSON';
 
 // Keeps the currently selected WMSCap ...
 var wmsCapabilities = null;
@@ -17,6 +20,16 @@ var xmlParser = new DOMParser();
 var axiosInstance = axios.create(
 {
 	withCredentials: true	
+});
+
+var boundaryLayer = new VectorLayer(
+{
+	background: '#1a2b39',
+  	source: new VectorSource(
+  	{
+    	url: 'https://openlayers.org/data/vector/ecoregions.json',
+    	format: new GeoJSON()
+    }),
 });
 
 export default function WMSComponent() {
@@ -156,6 +169,10 @@ export default function WMSComponent() {
 		
 		olMap.addLayer(layer, 0);	
 		loadedLayers.push(layer);
+		
+		// Reset the boundary layer to be the "top" most layer ...
+		olMap.removeLayer(boundaryLayer); // Remove it first for the halibut!
+		olMap.addLayer(boundaryLayer, 0);
 	}
 	
 	let divStyle = { 
