@@ -20,7 +20,8 @@ function App() {
   //  GeoJson API (read from flat .json file in public directory)
   useEffect( () => {
 
-    fetch('/mock-geojson-api.json')
+    //fetch('/mock-geojson-api.json')
+    fetch('/custom.geo.json')
       .then(response => response.json())
       .then( (fetchedFeatures) => {
 
@@ -28,7 +29,7 @@ function App() {
         //  use options to convert feature from EPSG:4326 to EPSG:3857
         const wktOptions = {
           dataProjection: 'EPSG:4326',
-          featureProjection: 'EPSG:3857'
+          featureProjection: 'EPSG:4326'
         }
         const parsedFeatures = new GeoJSON().readFeatures(fetchedFeatures, wktOptions)
 
